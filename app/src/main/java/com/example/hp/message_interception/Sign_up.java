@@ -50,7 +50,10 @@ public class Sign_up extends AppCompatActivity implements View.OnClickListener {
                     SQLiteDatabase sqLiteDatabase = myOpenHelper.getReadableDatabase();
 
                     Cursor cursor = sqLiteDatabase.query("login", new String[]{"name"}, "name=?", new String[]{name}, null, null, null);
-                    if (cursor != null && cursor.getCount() > 0) {
+                    if(psw!=repsw){
+                        Toast.makeText(Sign_up.this,"两次输入的密码不一致",Toast.LENGTH_SHORT).show();
+                    }
+                    else if (cursor != null && cursor.getCount() > 0) {
                         Toast.makeText(Sign_up.this, "该用户名已经被注册", Toast.LENGTH_SHORT).show();
                     } else {
                         ContentValues contentValues = new ContentValues();
