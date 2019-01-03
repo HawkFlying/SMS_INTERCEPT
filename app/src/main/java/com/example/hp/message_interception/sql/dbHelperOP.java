@@ -6,8 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.SystemClock;
 
-import com.example.hp.message_interception.BlackNumBean;
-import com.example.hp.message_interception.BlackNumDbHelper;
+import com.example.hp.message_interception.sql.Bean;
+
 import com.example.hp.message_interception.SMSdbHelper;
 
 import java.util.ArrayList;
@@ -51,17 +51,16 @@ public class dbHelperOP {
 
         /**
          * 添加黑名单  至数据库
-         * @param number
-         * @param mode
+
          */
-        public void addBlackNum(String number,int mode){
+        public void addBlackNum(String number,String sms){
 
             //获得一个可写的数据库的一个引用
             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
             ContentValues values= new ContentValues();
             values.put("number", number); // KEY 是列名，vlaue 是该列的值
-            values.put("mode", mode);// KEY 是列名，vlaue 是该列的值
+            values.put("sms", sms);// KEY 是列名，vlaue 是该列的值
 
             // 参数一：表名，参数三，是插入的内容
             // 参数二：只要能保存 values中是有内容的，第二个参数可以忽略
@@ -74,128 +73,73 @@ public class dbHelperOP {
          * @param number
          */
         public void deleteBlackNum(String number){
-//		？?dad?asd?？sad?asdasdasd?
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             //表名  删除的条件
             db.delete(table_black_num, "number = ?", new String[] {number});
 
         }
+    /**
+     * //查找 每一个黑名单都有 号码和模式  先把号码和模式封装一个bean
+     * 获得所有的黑名单
+     * @return
+     */
+    //分页查询 修改
 
-        /**
-         * 更新黑名单拦截模式
-         * @param number
-         * @param newMode
-         */
-        public void updateBlackNumMode(String number,int newMode){
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            ContentValues values= new ContentValues();
-            values.put("mode",newMode);
+    public List<Bean> getBlackNumByPage(int pageIndex, int pageSize){
+        //public List<BlackNumBean> getAllBlackNum(){
+        //创建集合对象
+        List<Bean> allBlackNum = new ArrayList<Bean>();
 
-            db.update(table_black_num, values," number = ?", new String[]{number});
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        //Cursor cursor = db.query(table_black_num, null, null, null, null, null, null);
+
+        //分页查询  修改
+        //Cursor cursor = db.rawQuery("select * from black_num limit "+pageSize+"offent"+(pageIndex * pageSize)+";", null);
+
+        //order by _id desc 根据_id倒叙排列   使每次添加的黑名单在下次打开时显示上面     同时每页限制20个
+        Cursor cursor = db.rawQuery("select * from black_sms order by _id desc limit "+pageSize+" offset "+(pageIndex*pageSize)+";", null);
+        // 返回的 cursor 默认是在第一行的上一行
+        //遍历
+        while(cursor.moveToNext()){// cursor.moveToNext() 向下移动一行,如果有内容，返回true
+            String number = cursor.getString(cursor.getColumnIndex("number"));// 获得number 这列的值
+            //获得模式   一共三列   mode为第二列
+            String sms = cursor.getString(cursor.getColumnIndex("sms"));
+
+            //将number mode 封装到bean中
+            Bean bean = new Bean(number, sms);
+            //封装的对象添加到集合中
+            allBlackNum.add(bean);
         }
 
+        //关闭cursor
+        cursor.close();
+        SystemClock.sleep(1000);// 休眠2秒，模拟黑名单比较多，比较耗时的情况
+        return allBlackNum;
 
-        /**
-         * //查找 每一个黑名单都有 号码和模式  先把号码和模式封装一个bean
-         * 获得所有的黑名单
-         * @return
-         */
-        //分页查询 修改
+    };
+    /**
+     * 获得黑名单的数量
+     */
+    public int getBlackNumCount(){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(table_black_num, new String[] {"count(*)"}, null, null, null, null, null);
 
-        public List<BlackNumBean> getBlackNumByPage(int pageIndex, int pageSize){
-            //public List<BlackNumBean> getAllBlackNum(){
-            //创建集合对象
-            List<BlackNumBean> allBlackNum = new ArrayList<BlackNumBean>();
+        cursor.moveToNext();
+        int count = cursor.getInt(0);// 仅查了一列，count(*) 这一刻列
 
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-            //Cursor cursor = db.query(table_black_num, null, null, null, null, null, null);
+        cursor.close();
 
-            //分页查询  修改
-            //Cursor cursor = db.rawQuery("select * from black_num limit "+pageSize+"offent"+(pageIndex * pageSize)+";", null);
+        return count;
 
-            //order by _id desc 根据_id倒叙排列   使每次添加的黑名单在下次打开时显示上面     同时每页限制20个
-            Cursor cursor = db.rawQuery("select * from black_num order by _id desc limit "+pageSize+" offset "+(pageIndex*pageSize)+";", null);
-            // 返回的 cursor 默认是在第一行的上一行
-            //遍历
-            while(cursor.moveToNext()){// cursor.moveToNext() 向下移动一行,如果有内容，返回true
-                String number = cursor.getString(cursor.getColumnIndex("number"));// 获得number 这列的值
-                //获得模式   一共三列   mode为第二列
-                int mode = cursor.getInt(2);
-
-                //将number mode 封装到bean中
-                BlackNumBean bean = new BlackNumBean(number, mode);
-                //封装的对象添加到集合中
-                allBlackNum.add(bean);
-            }
-
-            //关闭cursor
-            cursor.close();
-            SystemClock.sleep(1000);// 休眠2秒，模拟黑名单比较多，比较耗时的情况
-            return allBlackNum;
-
-        };
-
-
-        /**
-         * 获得黑名单的数量
-         */
-        public int getBlackNumCount(){
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-            Cursor cursor = db.query(table_black_num, new String[] {"count(*)"}, null, null, null, null, null);
-
-            cursor.moveToNext();
-            int count = cursor.getInt(0);// 仅查了一列，count(*) 这一刻列
-
-            cursor.close();
-
-            return count;
-
-        }
-
-
-        /*	*//**
-         * //查找 每一个黑名单都有 号码和模式  先把号码和模式封装一个bean
-         * 获得所有的黑名单
-         * @return
-         *//*
-		public List<BlackNumBean> getAllBlackNum(){
-		//创建集合对象
-		List<BlackNumBean> allBlackNum = new ArrayList<BlackNumBean>();
-
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		Cursor cursor = db.query(table_black_num, null, null, null, null, null, null);
-
-		// 返回的 cursor 默认是在第一行的上一行
-			//遍历
-			while(cursor.moveToNext()){// cursor.moveToNext() 向下移动一行,如果有内容，返回true
-				String number = cursor.getString(cursor.getColumnIndex("number"));// 获得number 这列的值
-				//获得模式   一共三列   mode为第二列
-				int mode = cursor.getInt(2);
-
-				//将number mode 封装到bean中
-				BlackNumBean bean = new BlackNumBean(number, mode);
-				//封装的对象添加到集合中
-				allBlackNum.add(bean);
-			}
-
-			//关闭cursor
-			cursor.close();
-
-
-			SystemClock.sleep(1000);// 休眠2秒，模拟黑名单比较多，比较耗时的情况
-
-		return allBlackNum;
-
-	};
-	*/
+    }
 
 
 
-        /**
+    /**
          * 根据号码，获得拦截模式
          * @param number
-         * @return
-         * 如果不是黑名单，那么，返回 -1
+         * @return，返回 -1
+         * 如果不是黑名单，那么
          */
         public int getMOdeByNumber(String number) {
 
