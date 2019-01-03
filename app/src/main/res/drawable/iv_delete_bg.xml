@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 删除黑名单  要建一个状态选择器 -->
+    <!-- 添加状态选择器的条目     很显然删除黑名单时是  点击（按压）删除图标   图标状态才会发生发生改变 同时删除黑名单 -->
+
+    <item android:drawable="@drawable/ic_delete_btn_focused" android:state_pressed="true"></item>
+    <item android:drawable="@drawable/ic_delete_btn" android:state_pressed="false"></item>
+
+</selector>
