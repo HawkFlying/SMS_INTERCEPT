@@ -16,9 +16,6 @@ public class BlackNumDbHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    /**
-     * 第一次运行时，创建数据库，调用此方法
-     */
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL("create table black_num(_id integer primary key autoincrement, number varchar(20) , mode integer);");
@@ -26,9 +23,6 @@ public class BlackNumDbHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    /**
-     * 当数据库版本不一样，升级数据库时，调用此方法
-     */
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }

@@ -21,21 +21,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-        <CheckBox
-            android:id="@+id/cb_stop_call"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="拦截电话" />
-
-        <CheckBox
-            android:id="@+id/cb_stop_sms"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="拦截短信" />
-            
-    </LinearLayout>
+     </LinearLayout>
     
      
     <LinearLayout

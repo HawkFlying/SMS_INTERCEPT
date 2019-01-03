@@ -12,7 +12,7 @@
 
         <TextView
             style="@style/tv_title"
-            android:text="黑名单拦截" />
+            android:text="骚扰短信拦截" />
 
         <Button
             android:layout_width="wrap_content"
@@ -20,7 +20,7 @@
             android:onClick="addBlackNum"
             android:layout_alignParentRight="true"
             android:layout_margin="5dp"
-            android:text="添加黑" />
+            android:text="添加" />
     </RelativeLayout>
 
     <RelativeLayout
