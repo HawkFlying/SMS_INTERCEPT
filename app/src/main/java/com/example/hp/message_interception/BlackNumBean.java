@@ -1,8 +1,5 @@
 package com.example.hp.message_interception;
 
-/**
- * Created by Administrator on 2017/6/29.
- */
 public class BlackNumBean {
     public String number;
     public int mode;
