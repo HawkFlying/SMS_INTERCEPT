@@ -18,9 +18,9 @@ public class Welcome extends AppCompatActivity {
         TimerTask task=new TimerTask() {
             @Override
             public void run() {
-                 Intent intent=new Intent(Welcome.this,Home.class);
+                 Intent intent=new Intent(Welcome.this,Sign_in.class);
                  startActivity(intent);
-                finish();
+                 finish();
             }
         };
         timer.schedule(task,3000);
