@@ -9,8 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
-
-
+import android.widget.Toast;
 
 //继承BroadcastReceiver
 public class AutoSMS extends BroadcastReceiver
