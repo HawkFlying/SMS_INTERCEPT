@@ -17,7 +17,7 @@ public class SMSdbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL("create table black_sms(_id integer primary key autoincrement, number varchar(20) , sms varchar(100));");
+        db.execSQL("create table black_sms(_id integer primary key autoincrement, number varchar(20) , sms varchar(100),tag varchar(20) );");
 
     }
 

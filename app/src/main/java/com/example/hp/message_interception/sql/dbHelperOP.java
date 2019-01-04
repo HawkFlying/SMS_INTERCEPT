@@ -6,9 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.SystemClock;
 
-import com.example.hp.message_interception.sql.Bean;
-
-import com.example.hp.message_interception.SMSdbHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +50,7 @@ public class dbHelperOP {
          * 添加黑名单  至数据库
 
          */
-        public void addBlackNum(String number,String sms){
+        public void addBlackNum(String number,String sms,String tag){
 
             //获得一个可写的数据库的一个引用
             SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -61,6 +58,7 @@ public class dbHelperOP {
             ContentValues values= new ContentValues();
             values.put("number", number); // KEY 是列名，vlaue 是该列的值
             values.put("sms", sms);// KEY 是列名，vlaue 是该列的值
+            values.put("tag", tag);// KEY 是列名，vlaue 是该列的值
 
             // 参数一：表名，参数三，是插入的内容
             // 参数二：只要能保存 values中是有内容的，第二个参数可以忽略
@@ -104,9 +102,10 @@ public class dbHelperOP {
             String number = cursor.getString(cursor.getColumnIndex("number"));// 获得number 这列的值
             //获得模式   一共三列   mode为第二列
             String sms = cursor.getString(cursor.getColumnIndex("sms"));
+            String tag = cursor.getString(cursor.getColumnIndex("tag"));
 
             //将number mode 封装到bean中
-            Bean bean = new Bean(number, sms);
+            Bean bean = new Bean(number, sms, tag);
             //封装的对象添加到集合中
             allBlackNum.add(bean);
         }

@@ -244,13 +244,14 @@ public class MainActivity extends AppCompatActivity {
         String number = etInputNum.getText().toString().trim();
 
         String sms = "2";
+        String tag = "2";
 
         //将黑名单信息插入数据库
-        dbHelperop.addBlackNum(number, sms);
+        dbHelperop.addBlackNum(number, sms,tag);
 
         //显示至listview页面
         //加入集合
-        blackNums.add(0, new com.example.hp.message_interception.sql.Bean(number, sms));//要 将黑名单添加至集合的第一位
+        blackNums.add(0, new com.example.hp.message_interception.sql.Bean(number, sms,tag));//要 将黑名单添加至集合的第一位
 
         //祖传错误   当数据库中没有数据    会直接进入黑名单添加数据  但是adapter在这个时候并没有创建   所以刷新的时候会显示空指针异常
         //所以要先判断adapter 是否为空
