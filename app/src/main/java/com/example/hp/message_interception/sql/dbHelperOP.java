@@ -8,7 +8,7 @@ import android.os.SystemClock;
 
 import com.example.hp.message_interception.sql.Bean;
 
-import com.example.hp.message_interception.SMSdbHelper;
+import com.example.hp.message_interception.sql.SMSdbHelper;
 
 import java.util.ArrayList;
 import java.util.List;
