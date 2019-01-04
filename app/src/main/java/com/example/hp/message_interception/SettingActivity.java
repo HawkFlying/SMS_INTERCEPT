@@ -214,7 +214,7 @@ public class SettingActivity extends AppCompatActivity {
             com.example.hp.message_interception.BlackNumBean blackNumBean = blackNums.get(position);
             //用取出的背包赋值
             vh.tvNum.setText(blackNumBean.number);
-            vh.tvMode.setText("拦截短信");
+            vh.tvMode.setText("已添加拦截");
 
             //删除黑名单
 //			为ivdelete设置一个点击事件
