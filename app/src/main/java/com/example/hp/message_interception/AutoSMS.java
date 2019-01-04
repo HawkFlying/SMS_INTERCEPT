@@ -2,25 +2,39 @@ package com.example.hp.message_interception;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.widget.Toast;
+import com.example.hp.message_interception.sql.Bean;
+import com.example.hp.message_interception.MainActivity;
+import com.example.hp.message_interception.sql.dbHelperOP;
 
 //继承BroadcastReceiver
 public class AutoSMS extends BroadcastReceiver
 {
-
     private String TAG="AutSMS";
+    private MainActivity.MyAdapter adapter;
+    /**
+     * 黑名单操作的工具类
+     */
+    public dbHelperOP dbHelperop;
+
+    public List<Bean> blackNums;
     //广播消息类型
+
     public static final String SMS_RECEIVED_ACTION = "android.provider.Telephony.SMS_RECEIVED";
+    protected Activity ctx;
+
     //覆盖onReceive方法
     @Override
     public void onReceive(Context context, Intent intent) {
+
         if("android.provider.Telephony.SMS_RECEIVED".equals(intent.getAction())){
             Log.i(TAG,"收到短信了");}
 
@@ -28,6 +42,7 @@ public class AutoSMS extends BroadcastReceiver
         // 第一步、获取短信的内容和发件人
         StringBuilder body = new StringBuilder();// 短信内容
         StringBuilder number = new StringBuilder();// 短信发件人
+        StringBuilder tag = new StringBuilder();// 短信发件人
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             Object[] _pdus = (Object[]) bundle.get("pdus");
@@ -38,9 +53,11 @@ public class AutoSMS extends BroadcastReceiver
             for (SmsMessage currentMessage : message) {
                 body.append(currentMessage.getDisplayMessageBody());
                 number.append(currentMessage.getDisplayOriginatingAddress());
+                tag.append(currentMessage.getDisplayOriginatingAddress());
             }
             String smsBody = body.toString();
             String smsNumber = number.toString();
+            String smstag = tag.toString();
             if (smsNumber.contains("+86")) {
                 smsNumber = smsNumber.substring(3);
             }
@@ -48,7 +65,10 @@ public class AutoSMS extends BroadcastReceiver
             boolean flags_filter = false;
             if (smsNumber.equals("10086")) {// 屏蔽10086发来的短信
                 flags_filter = true;
+                dbHelperop=dbHelperop.getInstance(context);
+                dbHelperop.addBlackNum(smsNumber, smsBody,smstag);
                 Log.v(TAG, "sms_number.equals(10086)");
+
             }
             // 第三步:取消
             if (flags_filter) {
