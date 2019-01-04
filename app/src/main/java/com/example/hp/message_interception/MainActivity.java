@@ -2,13 +2,14 @@ package com.example.hp.message_interception;
 
 import android.app.Activity;
 import android.os.Handler;
-
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,6 +40,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (ActivityCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.READ_SMS)!= PackageManager.PERMISSION_GRANTED||
+                ActivityCompat.checkSelfPermission(MainActivity.this,Manifest.permission.RECEIVE_SMS)
+                        !=PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.READ_SMS,Manifest.permission.RECEIVE_SMS},
+                    1);
+        }//动态申请权限
         ctx = this;
 
         listView = (ListView) findViewById(R.id.li_listView1);

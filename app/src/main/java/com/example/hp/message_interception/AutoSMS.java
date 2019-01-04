@@ -21,7 +21,10 @@ public class AutoSMS extends BroadcastReceiver
     //覆盖onReceive方法
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.v(TAG, ">>>>>>>onReceive start");
+        if("android.provider.Telephony.SMS_RECEIVED".equals(intent.getAction())){
+            Log.i(TAG,"收到短信了");}
+
+            Log.v(TAG, ">>>>>>>onReceive start");
         // 第一步、获取短信的内容和发件人
         StringBuilder body = new StringBuilder();// 短信内容
         StringBuilder number = new StringBuilder();// 短信发件人
