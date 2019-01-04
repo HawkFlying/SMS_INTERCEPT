@@ -31,6 +31,7 @@ MyOpenHelper myOpenHelper;
         button2=(Button)findViewById(R.id.sign_up);
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
+
     }
 
     @Override
@@ -41,7 +42,8 @@ MyOpenHelper myOpenHelper;
             case R.id.login:
             myOpenHelper = new MyOpenHelper(this);
             SQLiteDatabase sqLiteDatabase = myOpenHelper.getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.query("login", new String[]{"pwd"}, "name=?", new String[]{name}, null, null, null);
+
+                Cursor cursor = sqLiteDatabase.query("login", new String[]{"pwd"}, "name=?", new String[]{name}, null, null, null);
             if (cursor != null && cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     String pwd_1 = cursor.getString(0);

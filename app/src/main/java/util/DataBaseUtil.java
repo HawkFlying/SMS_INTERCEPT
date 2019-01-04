@@ -21,6 +21,7 @@ public class DataBaseUtil {
         this.context = context;
         String packageName = context.getPackageName();
         DATABASE_PATH="/data/data/"+packageName+"/databases/";
+
     }
 
     /**

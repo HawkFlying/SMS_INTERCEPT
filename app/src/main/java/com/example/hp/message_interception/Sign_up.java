@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,11 +49,12 @@ public class Sign_up extends AppCompatActivity implements View.OnClickListener {
                 if (name != null && !name.equals("") && psw != null && !psw.equals("") && repsw != null && !repsw.equals("")) {
                     myOpenHelper = new MyOpenHelper(Sign_up.this);
                     SQLiteDatabase sqLiteDatabase = myOpenHelper.getReadableDatabase();
-
                     Cursor cursor = sqLiteDatabase.query("login", new String[]{"name"}, "name=?", new String[]{name}, null, null, null);
-                    if(psw!=repsw){
+                   if(!psw.equals(repsw)){
                         Toast.makeText(Sign_up.this,"两次输入的密码不一致",Toast.LENGTH_SHORT).show();
-                    }
+                       Log.d("tag1",psw);
+                       Log.d("tag1",repsw);
+                   }
                     else if (cursor != null && cursor.getCount() > 0) {
                         Toast.makeText(Sign_up.this, "该用户名已经被注册", Toast.LENGTH_SHORT).show();
                     } else {
