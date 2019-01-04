@@ -20,56 +20,38 @@ public class AutoSMS extends BroadcastReceiver
     public static final String SMS_RECEIVED_ACTION = "android.provider.Telephony.SMS_RECEIVED";
     //覆盖onReceive方法
     @Override
-    public void onReceive(Context context, Intent intent)
-    {
-        // TODO Auto-generated method stub
-        Log.i(TAG, "引发接收事件");
-        //StringBuilder body=new StringBuilder("");//短信内容
-        //StringBuilder sender=new StringBuilder("");//发件人
-        //先判断广播消息
-        String action = intent.getAction();
-        if (SMS_RECEIVED_ACTION.equals(action))
-        {
-            //获取intent参数
-            Bundle bundle=intent.getExtras();
-            //判断bundle内容
-            if (bundle!=null)
-            {
-                //取pdus内容,转换为Object[]
-                Object[] pdus=(Object[])bundle.get("pdus");
-                //解析短信
-                SmsMessage[] messages = new SmsMessage[pdus.length];
-                for(int i=0;i<messages.length;i++)
-                {
-                    byte[] pdu=(byte[])pdus[i];
-                    messages[i]=SmsMessage.createFromPdu(pdu);
-                }
-                //解析完内容后分析具体参数
-                for(SmsMessage msg:messages)
-                {
-                    //获取短信内容
-                    String content=msg.getMessageBody();
-                    String sender=msg.getOriginatingAddress();
-                    Date date = new Date(msg.getTimestampMillis());
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String sendTime = sdf.format(date);
-                    //TODO:根据条件判断,然后进一般处理
-                    if ("10060".equals(sender))
-                    {
-                        // 屏蔽手机号为10060的短信，这里还可以时行一些处理，如把这个信息发送到第三人的手机等等。
-                        //TODO:测试
-                        Toast.makeText(context, "收到10060的短信"+"内容:"+content, Toast.LENGTH_LONG).show();
-                        //对于特定的内容,取消广播
-                        abortBroadcast();
-                    }
-                    else
-                    {
-                        Toast.makeText(context, "收到:"+sender+"内容:"+content+"时间:"+sendTime.toString(), Toast.LENGTH_LONG).show();
-                    }
-                }
-
+    public void onReceive(Context context, Intent intent) {
+        Log.v(TAG, ">>>>>>>onReceive start");
+        // 第一步、获取短信的内容和发件人
+        StringBuilder body = new StringBuilder();// 短信内容
+        StringBuilder number = new StringBuilder();// 短信发件人
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            Object[] _pdus = (Object[]) bundle.get("pdus");
+            SmsMessage[] message = new SmsMessage[_pdus.length];
+            for (int i = 0; i < _pdus.length; i++) {
+                message[i] = SmsMessage.createFromPdu((byte[]) _pdus[i]);
             }
-        }//if 判断广播消息结束
+            for (SmsMessage currentMessage : message) {
+                body.append(currentMessage.getDisplayMessageBody());
+                number.append(currentMessage.getDisplayOriginatingAddress());
+            }
+            String smsBody = body.toString();
+            String smsNumber = number.toString();
+            if (smsNumber.contains("+86")) {
+                smsNumber = smsNumber.substring(3);
+            }
+            // 第二步:确认该短信内容是否满足过滤条件
+            boolean flags_filter = false;
+            if (smsNumber.equals("10086")) {// 屏蔽10086发来的短信
+                flags_filter = true;
+                Log.v(TAG, "sms_number.equals(10086)");
+            }
+            // 第三步:取消
+            if (flags_filter) {
+                this.abortBroadcast();
+            }
+        }
+        Log.v(TAG, ">>>>>>>onReceive end");
     }
-
 }
