@@ -1,6 +1,7 @@
 package com.example.hp.message_interception;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import util.DataBaseUtil;
+import util.MyOpenHelper;
 
 
 public class Welcome extends AppCompatActivity {
@@ -19,6 +21,9 @@ public class Welcome extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         copyDataBaseToPhone();
+        MyOpenHelper myOpenHelper=new MyOpenHelper(this);
+        SQLiteDatabase db=myOpenHelper.getReadableDatabase();
+        db.execSQL("CREATE TABLE if not exists login(_id integer primary key autoincrement, pwd char(20), name char(20))");
         Timer timer=new Timer();
         TimerTask task=new TimerTask() {
             @Override
